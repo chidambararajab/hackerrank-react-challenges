@@ -1,67 +1,54 @@
-import React from 'react';
+import React, { useState } from "react";
 
-class TextEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      input: '',
-      output: []
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.appendInput = this.appendInput.bind(this);
-    this.resetInput = this.resetInput.bind(this);
-  }
+const TextEditor = () => {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState([]);
 
-  handleChange(e) {
-    this.setState({
-      input: e.target.value
-    });
-  }
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
 
-  appendInput() {
-    this.setState(state => {
-      let output = state.output;
-      output.push(state.input);
-      console.log("Output", output);
-      return {
-        output,
-        input: ''
-      }
-    });
-  }
+  const appendInput = () => {
+    setOutput([...output, input]);
+    setInput("");
+  };
 
-  resetInput() {
-    this.setState(state => {
-      let output = state.output;
-      output.pop();
-      console.log("New Output", output);
-      return {
-        output
-      }
-    });
-  }
+  const resetInput = () => {
+    setOutput(output.slice(0, -1));
+  };
 
-
-  render() {
-    return (
-      <React.Fragment>
-        <div className="controls">
-          <input className="word-input" type="text" data-testid="word-input" onChange={this.handleChange} value={this.state.input}/>
-          <button data-testid="append-button" onClick={this.appendInput} disabled={!this.state.input}>Append</button>
-          <button data-testid="undo-button" onClick={this.resetInput} disabled={this.state.output.length === 0}>Undo</button>
-        </div>
-        <div className="text-field" data-testid="text-field">   
-          {
-            this.state.output.map((values, index) => { 
-              return (
-                 <text key={index}>{values} </text>
-                ) 
-            })
-          }
-        </div>
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <React.Fragment>
+      <div className="controls">
+        <input
+          className="word-input"
+          type="text"
+          data-testid="word-input"
+          onChange={handleChange}
+          value={input}
+        />
+        <button
+          data-testid="append-button"
+          onClick={appendInput}
+          disabled={!input}
+        >
+          Append
+        </button>
+        <button
+          data-testid="undo-button"
+          onClick={resetInput}
+          disabled={output.length === 0}
+        >
+          Undo
+        </button>
+      </div>
+      <div className="text-field" data-testid="text-field">
+        {output.map((value, index) => (
+          <text key={index}>{value} </text>
+        ))}
+      </div>
+    </React.Fragment>
+  );
+};
 
 export default TextEditor;
