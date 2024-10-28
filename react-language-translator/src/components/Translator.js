@@ -1,51 +1,46 @@
-import React from 'react';
+import React, { useState } from "react";
 
-class Translator extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      input: '',
-      output: ''
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
+const Translator = ({ translations }) => {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
 
-  handleChange(e) {
-    let userInput = e.target.value;
-    this.setState({ 
-      input: userInput 
-    }, () => {
-      console.log("State input", this.state.input);
-    });
-    
-    for (let names of this.props.translations.keys()) {
-      if(userInput === names) {
-        this.setState({
-          output: this.props.translations.get(userInput)
-        }, () => {
-            console.log("State output", this.state.output);
-        });     
-      }
+  const handleChange = (e) => {
+    const userInput = e.target.value;
+    setInput(userInput);
+
+    if (translations.has(userInput)) {
+      setOutput(translations.get(userInput));
+    } else {
+      setOutput(""); // Clear output if no match found
     }
-    this.state.output = '';
-  }
+  };
 
-  render() {
-    return (
-      <React.Fragment>
-        <div className="controls">
-          <div className="input-container">
-            <span>input:</span>
-            <input type="text" className="text-input" data-testid="text-input" onChange={this.handleChange} value={this.state.input}/>
-          </div>
-          <div className="input-container">
-            <span>output:</span>
-            <input type="text" className="text-output" data-testid="text-output" readOnly value={this.state.output}/>
-          </div>
+  return (
+    <React.Fragment>
+      <div className="controls">
+        <div className="input-container">
+          <span>input:</span>
+          <input
+            type="text"
+            className="text-input"
+            data-testid="text-input"
+            onChange={handleChange}
+            value={input}
+          />
         </div>
-      </React.Fragment>
-    );
-  }
-}
+        <div className="input-container">
+          <span>output:</span>
+          <input
+            type="text"
+            className="text-output"
+            data-testid="text-output"
+            readOnly
+            value={output}
+          />
+        </div>
+      </div>
+    </React.Fragment>
+  );
+};
 
 export default Translator;
